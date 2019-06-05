@@ -23,7 +23,7 @@ def sort_final_data(function):
     return wrapper
 
 
-# @sort_final_data
+@sort_final_data
 def final_data(path):
     results = list()
     for grid in source_data(path):
