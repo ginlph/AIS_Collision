@@ -1,0 +1,44 @@
+test Introduction
+--test
+    --TestAisData
+        --414186000.txt
+        --413466840.txt
+        --414189000.txt
+        --414190000.txt
+        --414191000.txt
+        --413997996.txt
+        --413998001.txt
+        --413998221.txt
+        --414142000.txt
+        --414143000.txt
+        --414145625.txt
+        --416001438.txt
+        --416001440.txt
+        --416001447.txt
+        --431003365.txt
+        --431003374.txt
+        --412900838.txt
+        --412900882.txt
+    --Mongodb.py
+    --DCPA_and_TCPA_Result.py
+    --Collision risk distribution.py
+    --StudyChinaArea.png
+
+
+TestAisData 
+    存储AIS数据文件目录
+
+StudyChinaArea.png
+    对中国沿海网格划分(0.5*0.5°), 表征网格粒度
+
+Mongodb.py
+    将TestAisData目录下的AIS数据插入到MongoDB数据库中
+
+DCPA_and_TCPA_Result.py
+    计算出DCPA和TCPA的频率计数, 根据日间1海里、夜晚2海里
+
+Collision risk distribution.py
+    根据计算出的DCPA和TCPA频率计数, 使用Cartopy和matplotlib画出中国沿海船舶碰撞风险分布图
+
+
+
