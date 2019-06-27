@@ -17,10 +17,9 @@ def BinarySearch(sequence, value):
     while begin <= end:
         middle = (begin + end) // 2
         # middle = int(begin + (value - sequence[begin])/(sequence[end] - sequence[begin])*(end-begin))
-        if list(sequence[middle].keys())[0] < value:
+        if sequence[middle]["TIME"] < value:
             begin = middle + 1
-        elif list(sequence[middle].keys())[0] > value:
+        elif sequence[middle]["TIME"] > value:
             end = middle - 1
         else:
             return middle
-

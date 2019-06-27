@@ -3,60 +3,71 @@
 # author: lph time:2019/5/19
 import csv
 import numpy as np
+from datetime import timedelta
+
 from _Time.TimeStamp import date_range
 from _Time.ParseTime import parse_time
-from datetime import timedelta
 from BinarySearch import BinarySearch
 from Area.Vessel import Vessel
 
-#*********************************************************
-#           SourceData.py
-# SourceData文件夹存放原始数据
-# 存储在网格中船舶数据形式:
-#    [{"AIS delta_time": [Vessel_1(area_id, args), ...]},
-#                       ......                          ,
-#     {"AIS delta_time": [Vessel_i(area_id, args), ...]}]
-# 其中:
-#     AIS delta_time: AIS播发间隔
-# Vessel(area_id, args): 船舶对象
-# (area_id: 网格编号, args: 船舶属性, 如MMSI、TIME...)
-#*********************************************************
+#************************************************************************************************
+#                                      SourceData.py
+# Parameter:
+#       path(元数据路径): "../ShipDataQuery/ChinaCoastalData/year-month-day.csv"
+#       longitude(研究区域经度范围) = np.arange(...)
+#       latitude(研究区域纬度范围) = np.arange(...)
+#       delta(网格粒度) = 0.5
+#       **kwargs(时间范围) = start、end、step
+# Return:
+#       grids:
+#           存储网格及网格中船舶的list
+#       数据形式:
+#           [
+#               {"AIS delta_time": [Vessel_1(area_id, args, longitude, latitude, delta), ...]},
+#                     ......                  ......              ......                      ,
+#           {"AIS delta_time": [Vessel_i(area_id, args, longitude, latitude, delta), ...]}
+#        ]
+#************************************************************************************************
 
 
-# 网格范围
-longitude = np.arange(120, 126, 0.5)
-latitude = np.arange(30, 36, 0.5)
-
-# longitude的长度
-Lon_Length = len(longitude)
-
-# 起始时间
-start = parse_time("2016-10-01 00:00:00")
-# 终止时间
-end = parse_time("2016-10-02 00:00:05")
-# 时间步长step
-step = timedelta(seconds=5)
-
-
-def source_data(path):
+def source_data(path, *, longitude, latitude, delta, **kwargs):
+    lon_length = longitude.size
     # AIS存储网格区域
-    grids = [{time_: list()} for time_ in date_range(start, end, step)]
+    # grids = [{time_: list()} for time_ in date_range(start, end, step)]
+    grids = [{"TIME": time_, "SHIP_INFO": list()}
+        for time_ in date_range(
+            kwargs['start'], kwargs['end'], kwargs['step']
+        )
+    ]
     with open(path) as f_object:
         datas = csv.reader(f_object)
         # data: ['MMSI', 'TIME', 'LON', 'LAT', 'COG', 'SOG']
         next(datas)
         for data in datas:
+            lon, lat = data[2], data[3]
+            lon_, lat_ = 0, 0
             # 根据经、纬度(data[2], data[3])确定网格编号area_ID
-            if int(data[2][4]) >= 5 or int(data[3][3]) >= 5:
-                _lon = int(data[2][: 3]) + 0.5
-                _lat = int(data[3][: 2]) + 0.5
+            if int(lon[4]) < 5 and int(lat[3]) < 5:
+                lon_ = int(lon[: 3])
+                lat_ = int(lat[: 2])
+            elif int(lon[4]) >= 5 and int(lat[3]) >= 5:
+                lon_ = int(lon[: 3]) + 0.5
+                lat_ = int(lat[: 2]) + 0.5
+            elif int(lon[4]) < 5 and int(lat[3]) >= 5:
+                lon_ = int(lon[: 3])
+                lat_ = int(lat[: 2]) + 0.5
+            elif int(lon[4]) >= 5 and int(lat[3]) < 5:
+                lon_ = int(lon[: 3]) + 0.5
+                lat_ = int(lat[: 2])
             else:
-                _lon = int(data[2][: 3])
-                _lat = int(data[3][: 2])
-            print("_lon: ", _lon, "_lat: ", _lat)
-            lon_remainder = int(*np.where(longitude == _lon))
-            lat_quotient = int(*np.where(latitude == _lat))
-            area_ID = lat_quotient * Lon_Length + lon_remainder
+                print("")
+                print("Can't convert to grid index!!!")
+                print("Can't find {}/{}".format(lon, lat))
+            print("_lon: ", lon_, "_lat: ", lat_)
+            lon_remainder = int(*np.where(longitude == lon_))
+            lat_quotient = int(*np.where(latitude == lat_))
+            # are_id 根据该船当前时刻的经、纬度, 判断出该船所属网格编号
+            area_id = lat_quotient * lon_length + lon_remainder
             time = parse_time(data[1])
             time_remainder = time.second % 10
             if time_remainder in range(8, 10):
@@ -70,5 +81,7 @@ def source_data(path):
             else:
                 s = time_remainder - 5
                 _time = time - timedelta(seconds=s)
-            grids[BinarySearch(grids, _time)][_time].append(Vessel(area_ID, data))
+            grids[BinarySearch(grids, _time)]["SHIP_INFO"].append(Vessel(
+                area_id, data, gridlon_=longitude, gridlat_=latitude, grid_delta=delta
+            ))
     return grids
