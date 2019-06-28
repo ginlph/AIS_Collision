@@ -1,4 +1,4 @@
-#AIS_Collision
+# AIS_Collision
 ***Yangtze river estuary collision risk distribution***
 
 <img src="https://raw.githubusercontent.com/ginlph/AIS_Collision/master/RiskOfCollisionPicture/2016-10-01/Distribution_of_collision_risk_in_Yangtze_river_estuary(2016-10-01).png" width="75%">
@@ -9,7 +9,7 @@
 
 [The channel of Yangtze River(Polygon)](https://github.com/ginlph/AIS_Collision/blob/master/DataProcess/channel_geojson/map.geojson)
 
-###Code Structure
+### Code Structure
 * **_Time**
     * *ParseTime.py* `"%Y-%m-%d %H:%M:%S" -> datetime(year, month, day, hour, minute, second)`
     * *TimeStamp.py* `date_range(start, step, end)`
@@ -63,7 +63,7 @@
 * **main.py**
     * use `cartopy module` to draw Yangtze river estuary collision risk distribution
 
-###未完待续...
+### 未完待续...
 ***Author: LPH，TIME: 2019年06月28日 下午15:15***
  
 ***Address 上海海事大学(Shanghai maritime university)***
