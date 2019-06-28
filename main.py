@@ -42,7 +42,7 @@ for index in range(PolygonLen):
 lon1, lat1 = points[:, 0], points[:, 1]
 
 request = img_tiles.TDT()
-fig = plt.figure(figsize=(10, 10), dpi=300)
+fig = plt.figure(figsize=(10, 10), dpi=100)
 ax = plt.axes(projection=request.crs)
 ax.set_extent([120, 126, 30, 36], crs=ccrs.PlateCarree())
 
@@ -56,4 +56,5 @@ gl.yformatter = LATITUDE_FORMATTER
 ax.add_image(request, 8)
 
 ax.scatter(lon1, lat1, transform=ccrs.PlateCarree(), s=.03, color='red')
+plt.savefig("./RiskOfCollisionPicture/2016-10-01/Distribution_of_collision_risk_in_Yangtze_river_estuary(2016-10-01).png", bbox_inches='tight')
 plt.show()
