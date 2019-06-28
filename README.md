@@ -39,6 +39,7 @@
         * mid_point method: the half-way point along a great circle path between the two vessels(目标船与参考船之间中点地理位置)
         * bearing method: initial bearing(方位)
         <img src="http://www.movable-type.co.uk/scripts/baghdad-to-osaka.jpg">
+        
         * cpa method: return DCPA, TCPA(计算两船在同一AIS时刻下的DCPA和TCPA)
         
 * **DataProcess**
