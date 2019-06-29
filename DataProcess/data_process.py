@@ -69,7 +69,7 @@ if __name__ == '__main__':
         data = [min(items, key=itemgetter('distance')) for tar, items in
                 groupby(datas, key=itemgetter('Tar_Ship', 'Ref_Ship'))]
         print(len(data))
-        with open("./Final_Data_Result/finall_data-10-01.csv", 'w') as f:
+        with open("./Final_Data_Result/10-01.csv", 'w') as f:
             _data = csv.DictWriter(f, ['Tar_Ship', 'Ref_Ship', 'mid_lon', 'mid_lat', 'distance', 'DCPA', 'TCPA'])
             _data.writeheader()
             _data.writerows(data)
